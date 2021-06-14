@@ -10,6 +10,8 @@ import fr.miage.spacelib.vspaceshared.utilities.ReservationExport;
 import fr.miage.spacelib.vspaceshared.utilities.UsagerExport;
 import javax.swing.JFrame;
 import fr.miage.spacelib.vspaceshared.interfremote.ExpoGestionBorneRemote;
+import fr.miage.spacelib.vspaceshared.utilities.AucunUsagerException;
+import fr.miage.spacelib.vspaceshared.utilities.AucunVoyageException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
@@ -207,22 +209,23 @@ public class JFConnexion extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_connexionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_connexionActionPerformed
-        usager = borne.connecter((long) Long.parseLong(txb_identifiantClient.getText()));
-        reservation = borne.reservationEnCours(usager.getId());
-        if (reservation != null) {
+        try {
+            usager = borne.connecter(Long.parseLong(txb_identifiantClient.getText()));
+            reservation = borne.reservationEnCours(usager.getId());
+            
             JFrame frame = new JFDepartArrivee();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(300, 300);
             frame.setVisible(true);
-        } else {
+
+            this.dispose();
+        } catch (AucunUsagerException | AucunVoyageException ex) {
             /* Ouvrir nouvelle fenêtre */
             JFrame frame = new JFEmpruntNavette();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(300, 300);
             frame.setVisible(true);
         }
-
-        this.dispose();
 
     }//GEN-LAST:event_btn_connexionActionPerformed
 
