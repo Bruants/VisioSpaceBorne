@@ -6,6 +6,7 @@
 package fr.miage.spacelib.borneusager;
 
 import fr.miage.spacelib.vspaceshared.interfremote.GestionBorneUsagerRemote;
+import fr.miage.spacelib.vspaceshared.utilities.ReservationExport;
 import fr.miage.spacelib.vspaceshared.utilities.UsagerExport;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,9 +21,29 @@ import javax.swing.JFrame;
  */
 public class JFConnexion extends javax.swing.JFrame {
 
-    private final static Long STATION_ID = 123456789L;
+    final static Long STATION_ID = 1L;
 
     private GestionBorneUsagerRemote borne;
+
+    static private UsagerExport usager;
+
+    static private ReservationExport reservation;
+
+    public static ReservationExport getReservation() {
+        return reservation;
+    }
+
+    public static void setReservation(ReservationExport reservation) {
+        JFConnexion.reservation = reservation;
+    }
+
+    static public UsagerExport getUsager() {
+        return usager;
+    }
+
+    static public void setUsager(UsagerExport usager) {
+        JFConnexion.usager = usager;
+    }
 
     /**
      * Creates new form JFEmpruntNavette
@@ -68,6 +89,8 @@ public class JFConnexion extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("VISIOSPACE: CONNEXION");
+        setPreferredSize(new java.awt.Dimension(350, 350));
+        setResizable(false);
 
         btn_connexion.setText("CONNEXION");
         btn_connexion.addActionListener(new java.awt.event.ActionListener() {
@@ -182,13 +205,21 @@ public class JFConnexion extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_connexionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_connexionActionPerformed
-        UsagerExport usager = borne.connecter((long) Long.parseLong(txb_identifiantClient.getText()));
-        /* Ouvrir nouvelle fenêtre */
-        JFrame frame = new JFEmpruntNavette();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 300);
-        frame.setVisible(true);
-        
+        usager = borne.connecter((long) Long.parseLong(txb_identifiantClient.getText()));
+        reservation = borne.reservationEnCours(usager.getId());
+        if (reservation != null) {
+            JFrame frame = new JFDepartArrivee();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(300, 300);
+            frame.setVisible(true);
+        } else {
+            /* Ouvrir nouvelle fenêtre */
+            JFrame frame = new JFEmpruntNavette();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(300, 300);
+            frame.setVisible(true);
+        }
+
         this.dispose();
 
     }//GEN-LAST:event_btn_connexionActionPerformed
@@ -198,7 +229,7 @@ public class JFConnexion extends javax.swing.JFrame {
     }//GEN-LAST:event_txb_identifiantClientActionPerformed
 
     private void btn_inscriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_inscriptionActionPerformed
-        UsagerExport usager = borne.inscrire(txb_nom.getText(), txb_nom.getText());
+        usager = borne.inscrire(txb_nom.getText(), txb_nom.getText());
         txb_identifiantNouveauClient.setText(Long.toString(usager.getId()));
         txb_identifiantClient.setText(Long.toString(usager.getId()));
     }//GEN-LAST:event_btn_inscriptionActionPerformed
