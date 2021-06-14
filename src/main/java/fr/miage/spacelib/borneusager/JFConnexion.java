@@ -5,17 +5,64 @@
  */
 package fr.miage.spacelib.borneusager;
 
+import fr.miage.spacelib.vspaceshared.interfremote.GestionBorneUsagerRemote;
+import fr.miage.spacelib.vspaceshared.utilities.ReservationExport;
+import fr.miage.spacelib.vspaceshared.utilities.UsagerExport;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.swing.JFrame;
+
 /**
  *
  * @author AlexisVivier
  */
 public class JFConnexion extends javax.swing.JFrame {
 
+    final static Long STATION_ID = 1L;
+
+    private GestionBorneUsagerRemote borne;
+
+    static private UsagerExport usager;
+
+    static private ReservationExport reservation;
+
+    public static ReservationExport getReservation() {
+        return reservation;
+    }
+
+    public static void setReservation(ReservationExport reservation) {
+        JFConnexion.reservation = reservation;
+    }
+
+    static public UsagerExport getUsager() {
+        return usager;
+    }
+
+    static public void setUsager(UsagerExport usager) {
+        JFConnexion.usager = usager;
+    }
+
     /**
      * Creates new form JFEmpruntNavette
      */
     public JFConnexion() {
         initComponents();
+        lbl_bienvenue.setText("Bienvenue à la station " + STATION_ID);
+        init();
+    }
+
+    private void init() {
+        try {
+            // 1 : lookup object
+            Context ctx = new InitialContext();
+            borne = (GestionBorneUsagerRemote) ctx.lookup("fr.miage.spacelib.vspaceshared.interfremote.GestionBorneUsagerRemote");
+
+        } catch (NamingException ex) {
+            Logger.getLogger(JFConnexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -27,25 +74,28 @@ public class JFConnexion extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        btn_connexion = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         lbl_bienvenue = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txb_identifiantClient = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txb_nom = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        txb_identifiantClient1 = new javax.swing.JTextField();
+        txb_prenom = new javax.swing.JTextField();
+        txb_identifiantNouveauClient = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        btn_inscription = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("VISIOSPACE: CONNEXION");
+        setPreferredSize(new java.awt.Dimension(350, 350));
+        setResizable(false);
 
-        jButton1.setText("CONNEXION");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btn_connexion.setText("CONNEXION");
+        btn_connexion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btn_connexionActionPerformed(evt);
             }
         });
 
@@ -66,14 +116,14 @@ public class JFConnexion extends javax.swing.JFrame {
 
         jLabel3.setText("Prenom");
 
-        txb_identifiantClient1.setEditable(false);
+        txb_identifiantNouveauClient.setEditable(false);
 
         jLabel5.setText("Identifiant client");
 
-        jButton2.setText("INSCRIPTION");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btn_inscription.setText("INSCRIPTION");
+        btn_inscription.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btn_inscriptionActionPerformed(evt);
             }
         });
 
@@ -95,7 +145,7 @@ public class JFConnexion extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
-                            .addComponent(txb_identifiantClient1, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txb_identifiantNouveauClient, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(21, 21, 21))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -105,20 +155,20 @@ public class JFConnexion extends javax.swing.JFrame {
                         .addGap(149, 149, 149))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btn_connexion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(8, 8, 8)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel3)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txb_prenom, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel2)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(txb_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addComponent(txb_identifiantClient, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btn_inscription, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -133,38 +183,56 @@ public class JFConnexion extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txb_identifiantClient, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addComponent(btn_connexion)
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txb_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txb_prenom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton2)
+                .addComponent(btn_inscription)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txb_identifiantClient1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txb_identifiantNouveauClient, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btn_connexionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_connexionActionPerformed
+        usager = borne.connecter((long) Long.parseLong(txb_identifiantClient.getText()));
+        reservation = borne.reservationEnCours(usager.getId());
+        if (reservation != null) {
+            JFrame frame = new JFDepartArrivee();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(300, 300);
+            frame.setVisible(true);
+        } else {
+            /* Ouvrir nouvelle fenêtre */
+            JFrame frame = new JFEmpruntNavette();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(300, 300);
+            frame.setVisible(true);
+        }
+
+        this.dispose();
+
+    }//GEN-LAST:event_btn_connexionActionPerformed
 
     private void txb_identifiantClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txb_identifiantClientActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txb_identifiantClientActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void btn_inscriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_inscriptionActionPerformed
+        usager = borne.inscrire(txb_nom.getText(), txb_nom.getText());
+        txb_identifiantNouveauClient.setText(Long.toString(usager.getId()));
+        txb_identifiantClient.setText(Long.toString(usager.getId()));
+    }//GEN-LAST:event_btn_inscriptionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -203,17 +271,17 @@ public class JFConnexion extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btn_connexion;
+    private javax.swing.JButton btn_inscription;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel lbl_bienvenue;
     private javax.swing.JTextField txb_identifiantClient;
-    private javax.swing.JTextField txb_identifiantClient1;
+    private javax.swing.JTextField txb_identifiantNouveauClient;
+    private javax.swing.JTextField txb_nom;
+    private javax.swing.JTextField txb_prenom;
     // End of variables declaration//GEN-END:variables
 }
