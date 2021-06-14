@@ -35,7 +35,7 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
         lbl_bienvenue = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        lst_listeStation = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -60,12 +60,12 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
 
         jLabel3.setText("Station de destination");
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        lst_listeStation.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(lst_listeStation);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -162,8 +162,8 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_bienvenue;
+    private javax.swing.JList<String> lst_listeStation;
     // End of variables declaration//GEN-END:variables
 }
