@@ -5,7 +5,8 @@
  */
 package fr.miage.spacelib.borneusager;
 
-import fr.miage.spacelib.vspaceshared.interfremote.GestionBorneUsagerRemote;
+import fr.miage.spacelib.utilities.RMIBorneServiceManager;
+import fr.miage.spacelib.vspaceshared.interfremote.ExpoGestionBorneRemote;
 import fr.miage.spacelib.vspaceshared.utilities.AucunQuaiException;
 import fr.miage.spacelib.vspaceshared.utilities.AucunUsagerException;
 import fr.miage.spacelib.vspaceshared.utilities.AucuneNavetteException;
@@ -30,7 +31,7 @@ import javax.swing.JFrame;
  */
 public class JFEmpruntNavette extends javax.swing.JFrame {
 
-    GestionBorneUsagerRemote borne;
+    ExpoGestionBorneRemote borne;
 
     /**
      * Creates new form JFEmpruntNavette
@@ -43,16 +44,17 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
 
     private void init() {
         List<StationExport> stations;
-
         try {
-            // 1 : lookup object
-            Context ctx = new InitialContext();
-            borne = (GestionBorneUsagerRemote) ctx.lookup("fr.miage.spacelib.vspaceshared.interfremote.GestionBorneUsagerRemote");
+            RMIBorneServiceManager rmiMgr = new RMIBorneServiceManager();
+            this.borne = rmiMgr.getClientLourdRemoteSvc();
+            this.borne.testNul("TTITI");
+
             stations = borne.toutesStations();
 
             stations.forEach((sta) -> {
                 cmb_stationDest.addItem(sta.getCoordonnee() + '|' + sta.getId());
             });
+
         } catch (NamingException ex) {
             Logger.getLogger(JFConnexion.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -192,7 +194,7 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
                     new SimpleDateFormat("ss/MM/yyyy").parse(txb_dateArrivee.getText()),
                     JFConnexion.STATION_ID,
                     Long.parseLong((String) cmb_stationDest.getSelectedItem()));
-            
+
             /* Ouvrir nouvelle fenêtre */
             JFrame frame = new JFConnexion();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

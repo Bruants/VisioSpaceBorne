@@ -5,15 +5,14 @@
  */
 package fr.miage.spacelib.borneusager;
 
-import fr.miage.spacelib.vspaceshared.interfremote.GestionBorneUsagerRemote;
+import fr.miage.spacelib.utilities.RMIBorneServiceManager;
 import fr.miage.spacelib.vspaceshared.utilities.ReservationExport;
 import fr.miage.spacelib.vspaceshared.utilities.UsagerExport;
+import javax.swing.JFrame;
+import fr.miage.spacelib.vspaceshared.interfremote.ExpoGestionBorneRemote;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.swing.JFrame;
 
 /**
  *
@@ -23,11 +22,15 @@ public class JFConnexion extends javax.swing.JFrame {
 
     final static Long STATION_ID = 1L;
 
-    private GestionBorneUsagerRemote borne;
+    private ExpoGestionBorneRemote borne;
 
     static private UsagerExport usager;
 
     static private ReservationExport reservation;
+
+    public ExpoGestionBorneRemote getBorne() {
+        return borne;
+    }
 
     public static ReservationExport getReservation() {
         return reservation;
@@ -56,10 +59,9 @@ public class JFConnexion extends javax.swing.JFrame {
 
     private void init() {
         try {
-            // 1 : lookup object
-            Context ctx = new InitialContext();
-            borne = (GestionBorneUsagerRemote) ctx.lookup("fr.miage.spacelib.vspaceshared.interfremote.GestionBorneUsagerRemote");
-
+            RMIBorneServiceManager rmiMgr = new RMIBorneServiceManager();
+            this.borne = rmiMgr.getClientLourdRemoteSvc();
+            this.borne.testNul("TTITI");
         } catch (NamingException ex) {
             Logger.getLogger(JFConnexion.class.getName()).log(Level.SEVERE, null, ex);
         }
