@@ -12,7 +12,6 @@ import javax.naming.NamingException;
 
 /**
  * Service RMI client 
- * @author LECOQ, JUVENAL, CLAMENT
  * @version 1.0 
  */
 public class RMIBorneServiceManager {

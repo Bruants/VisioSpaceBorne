@@ -28,7 +28,7 @@ public class JFDepartArrivee extends javax.swing.JFrame {
      */
     public JFDepartArrivee() {
         initComponents();
-        lbl_bienvenue.setText("Bienvenue à la station " + JFConnexion.STATION_ID);
+        lbl_bienvenue.setText("Bienvenue à la station " + JFConnexion.getPageConnexion().STATION_ID);
         init();
     }
 
@@ -37,8 +37,11 @@ public class JFDepartArrivee extends javax.swing.JFrame {
             RMIBorneServiceManager rmiMgr = new RMIBorneServiceManager();
             this.borne = rmiMgr.getClientLourdRemoteSvc();
             this.borne.testNul("TTITI");
+            this.borne.isReservationArrivee(JFConnexion.getPageConnexion().getUsager().getId());
         } catch (NamingException ex) {
             Logger.getLogger(JFConnexion.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AucunVoyageException ex) {
+            Logger.getLogger(JFDepartArrivee.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -129,13 +132,13 @@ public class JFDepartArrivee extends javax.swing.JFrame {
         /* Ouvrir nouvelle fenêtre */
         JFrame frame = new JFConnexion();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 300);
+        frame.setSize(300, 400);
         frame.setVisible(true);
     }//GEN-LAST:event_btn_cancelActionPerformed
 
     private void btn_departActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_departActionPerformed
         try {
-            borne.departVoyage(JFConnexion.getReservation().getId());
+            borne.departVoyage(JFConnexion.getPageConnexion().getReservation().getId());
         } catch (AucunVoyageException ex) {
             Logger.getLogger(JFDepartArrivee.class.getName()).log(Level.SEVERE, null, ex);
         } catch (AucuneNavetteException ex) {
@@ -147,7 +150,7 @@ public class JFDepartArrivee extends javax.swing.JFrame {
 
     private void btn_arriveeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_arriveeActionPerformed
         try {
-            borne.arriveeVoyage(JFConnexion.getReservation().getId());
+            borne.arriveeVoyage(JFConnexion.getPageConnexion().getReservation().getId());
         } catch (AucunVoyageException ex) {
             Logger.getLogger(JFDepartArrivee.class.getName()).log(Level.SEVERE, null, ex);
         } catch (AucuneNavetteException ex) {

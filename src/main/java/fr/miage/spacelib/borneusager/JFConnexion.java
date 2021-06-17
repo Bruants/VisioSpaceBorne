@@ -22,38 +22,45 @@ import javax.naming.NamingException;
  */
 public class JFConnexion extends javax.swing.JFrame {
 
-    final static Long STATION_ID = 1L;
+    final public Long STATION_ID = 14L;
+
+    private static JFConnexion pageConnexion;
 
     private ExpoGestionBorneRemote borne;
 
-    static private UsagerExport usager;
+    private UsagerExport usager;
 
-    static private ReservationExport reservation;
+    private ReservationExport reservation;
 
     public ExpoGestionBorneRemote getBorne() {
         return borne;
     }
 
-    public static ReservationExport getReservation() {
+    public ReservationExport getReservation() {
         return reservation;
     }
 
-    public static void setReservation(ReservationExport reservation) {
-        JFConnexion.reservation = reservation;
+    public void setReservation(ReservationExport reservation) {
+        this.reservation = reservation;
     }
 
-    static public UsagerExport getUsager() {
+    public UsagerExport getUsager() {
         return usager;
     }
 
-    static public void setUsager(UsagerExport usager) {
-        JFConnexion.usager = usager;
+    public void setUsager(UsagerExport usager) {
+        this.usager = usager;
+    }
+
+    public static JFConnexion getPageConnexion() {
+        return pageConnexion;
     }
 
     /**
      * Creates new form JFEmpruntNavette
      */
     public JFConnexion() {
+        pageConnexion = this;
         initComponents();
         lbl_bienvenue.setText("Bienvenue à la station " + STATION_ID);
         init();
@@ -209,24 +216,35 @@ public class JFConnexion extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_connexionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_connexionActionPerformed
+        boolean etatConnexion = false;
         try {
             usager = borne.connecter(Long.parseLong(txb_identifiantClient.getText()));
-            reservation = borne.reservationEnCours(usager.getId());
-            
-            JFrame frame = new JFDepartArrivee();
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(300, 300);
-            frame.setVisible(true);
-
-            this.dispose();
-        } catch (AucunUsagerException | AucunVoyageException ex) {
-            /* Ouvrir nouvelle fenêtre */
-            JFrame frame = new JFEmpruntNavette();
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(300, 300);
-            frame.setVisible(true);
+            etatConnexion = true;
+        } catch (AucunUsagerException ex) {
+            Logger.getLogger(JFConnexion.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        if (etatConnexion) {
+            try {
+
+                reservation = borne.reservationEnCours(usager.getId());
+
+                JFrame frame = new JFDepartArrivee();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setSize(300, 400);
+                frame.setVisible(true);
+
+                this.dispose();
+            } catch (AucunVoyageException ex) {
+                /* Ouvrir nouvelle fenêtre */
+                JFrame frame = new JFEmpruntNavette();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setSize(300, 400);
+                frame.setVisible(true);
+
+                this.dispose();
+            }
+        }
     }//GEN-LAST:event_btn_connexionActionPerformed
 
     private void txb_identifiantClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txb_identifiantClientActionPerformed
