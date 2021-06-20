@@ -24,16 +24,8 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="btn_arrivee" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btn_depart" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btn_cancel" alignment="0" pref="243" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="123" max="-2" attributes="0"/>
                       <Component id="lbl_bienvenue" min="-2" max="-2" attributes="0"/>
@@ -41,6 +33,18 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
                       <Component id="jLabel1" min="-2" pref="165" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="label_error" alignment="0" min="-2" pref="243" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="btn_arrivee" alignment="0" max="32767" attributes="0"/>
+                              <Component id="btn_depart" alignment="0" max="32767" attributes="0"/>
+                              <Component id="btn_okay" alignment="0" pref="243" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="label_info" alignment="0" min="-2" pref="243" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace pref="42" max="32767" attributes="0"/>
@@ -58,9 +62,13 @@
               <Component id="btn_depart" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="btn_arrivee" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="103" max="32767" attributes="0"/>
-              <Component id="btn_cancel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="label_info" min="-2" pref="16" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+              <Component id="label_error" min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace pref="46" max="32767" attributes="0"/>
+              <Component id="btn_okay" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -74,12 +82,12 @@
         <Property name="text" type="java.lang.String" value="EMBARQUEMENT"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btn_cancel">
+    <Component class="javax.swing.JButton" name="btn_okay">
       <Properties>
-        <Property name="text" type="java.lang.String" value="CANCEL"/>
+        <Property name="text" type="java.lang.String" value="RETOUR A L&apos;ACCUEIL"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_cancelActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_okayActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lbl_bienvenue">
@@ -102,6 +110,10 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_arriveeActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="label_error">
+    </Component>
+    <Component class="javax.swing.JLabel" name="label_info">
     </Component>
   </SubComponents>
 </Form>

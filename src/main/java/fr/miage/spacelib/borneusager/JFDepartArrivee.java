@@ -5,16 +5,13 @@
  */
 package fr.miage.spacelib.borneusager;
 
-import fr.miage.spacelib.vspaceshared.interfremote.GestionBorneUsagerRemote;
+import fr.miage.spacelib.utilities.RMIBorneServiceManager;
+import fr.miage.spacelib.vspaceshared.interfremote.ExpoGestionBorneRemote;
 import fr.miage.spacelib.vspaceshared.utilities.AucunQuaiException;
 import fr.miage.spacelib.vspaceshared.utilities.AucunVoyageException;
 import fr.miage.spacelib.vspaceshared.utilities.AucuneNavetteException;
-import fr.miage.spacelib.vspaceshared.utilities.StationExport;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.swing.JFrame;
 
@@ -24,25 +21,37 @@ import javax.swing.JFrame;
  */
 public class JFDepartArrivee extends javax.swing.JFrame {
 
-    GestionBorneUsagerRemote borne;
-
+    ExpoGestionBorneRemote borne;
+    
     /**
      * Creates new form JFEmpruntNavette
      */
     public JFDepartArrivee() {
         initComponents();
-        lbl_bienvenue.setText("Bienvenue à la station " + JFConnexion.STATION_ID);
+        lbl_bienvenue.setText("Bienvenue à la station " + JFConnexion.getPageConnexion().STATION_ID);
         init();
     }
 
     private void init() {
         try {
-            // 1 : lookup object
-            Context ctx = new InitialContext();
-            borne = (GestionBorneUsagerRemote) ctx.lookup("fr.miage.spacelib.vspaceshared.interfremote.GestionBorneUsagerRemote");
-
+            RMIBorneServiceManager rmiMgr = new RMIBorneServiceManager();
+            this.borne = rmiMgr.getClientLourdRemoteSvc();
+            System.out.println(JFConnexion.getPageConnexion().getUsager().getId().toString());
+            
+            if (this.borne.reservationEnCours(JFConnexion.getPageConnexion().getUsager().getId()) == null) {
+                
+                btn_depart.setEnabled(false);
+                btn_arrivee.setEnabled(false);
+            }
+            
         } catch (NamingException ex) {
             Logger.getLogger(JFConnexion.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AucunVoyageException ex) {
+            Logger.getLogger(JFDepartArrivee.class.getName()).log(Level.SEVERE, null, ex);
+            btn_depart.setEnabled(false);
+            btn_arrivee.setEnabled(false);
+            label_error.setText("Aucun voyage n'est prévu aujourd'hui !");
+            label_info.setText("");
         }
     }
 
@@ -56,10 +65,12 @@ public class JFDepartArrivee extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        btn_cancel = new javax.swing.JButton();
+        btn_okay = new javax.swing.JButton();
         lbl_bienvenue = new javax.swing.JLabel();
         btn_depart = new javax.swing.JButton();
         btn_arrivee = new javax.swing.JButton();
+        label_error = new javax.swing.JLabel();
+        label_info = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -67,10 +78,10 @@ public class JFDepartArrivee extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setText("EMBARQUEMENT");
 
-        btn_cancel.setText("CANCEL");
-        btn_cancel.addActionListener(new java.awt.event.ActionListener() {
+        btn_okay.setText("RETOUR A L'ACCUEIL");
+        btn_okay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_cancelActionPerformed(evt);
+                btn_okayActionPerformed(evt);
             }
         });
 
@@ -97,17 +108,20 @@ public class JFDepartArrivee extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btn_arrivee, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btn_depart, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btn_cancel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(123, 123, 123)
                         .addComponent(lbl_bienvenue))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(59, 59, 59)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(label_error, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(btn_arrivee, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btn_depart, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btn_okay, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE))
+                            .addComponent(label_info, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(42, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -121,42 +135,65 @@ public class JFDepartArrivee extends javax.swing.JFrame {
                 .addComponent(btn_depart)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btn_arrivee)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
-                .addComponent(btn_cancel)
-                .addGap(55, 55, 55))
+                .addGap(18, 18, 18)
+                .addComponent(label_info, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(41, 41, 41)
+                .addComponent(label_error, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                .addComponent(btn_okay)
+                .addGap(27, 27, 27))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btn_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelActionPerformed
+    private void btn_okayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_okayActionPerformed
         /* Ouvrir nouvelle fenêtre */
         JFrame frame = new JFConnexion();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 300);
+        frame.setSize(300, 400);
         frame.setVisible(true);
-    }//GEN-LAST:event_btn_cancelActionPerformed
+        
+        this.dispose();
+    }//GEN-LAST:event_btn_okayActionPerformed
 
     private void btn_departActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_departActionPerformed
         try {
-            borne.departVoyage(JFConnexion.getReservation().getId());
+            borne.departVoyage(JFConnexion.getPageConnexion().getReservation().getId());
+            label_info.setText("Décollage de la navette !");
+            if (this.borne.isReservationArrivee(JFConnexion.getPageConnexion().getUsager().getId())) {
+                btn_depart.setEnabled(true);
+                btn_arrivee.setEnabled(false);
+            } else {
+                btn_depart.setEnabled(false);
+                btn_arrivee.setEnabled(true);
+            }
         } catch (AucunVoyageException ex) {
+            label_error.setText("Aucun voyage n'est prévu aujourd'hui !");
             Logger.getLogger(JFDepartArrivee.class.getName()).log(Level.SEVERE, null, ex);
         } catch (AucuneNavetteException ex) {
+            label_error.setText(ex.getMessage());
             Logger.getLogger(JFDepartArrivee.class.getName()).log(Level.SEVERE, null, ex);
         } catch (AucunQuaiException ex) {
+            label_error.setText(ex.getMessage());
             Logger.getLogger(JFDepartArrivee.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btn_departActionPerformed
 
     private void btn_arriveeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_arriveeActionPerformed
         try {
-            borne.arriveeVoyage(JFConnexion.getReservation().getId());
+            borne.arriveeVoyage(JFConnexion.getPageConnexion().getReservation().getId());
+            label_info.setText("La navette est arrivée à destination");
+            btn_depart.setEnabled(false);
+            btn_arrivee.setEnabled(false);
         } catch (AucunVoyageException ex) {
+            label_error.setText(ex.getMessage());
             Logger.getLogger(JFDepartArrivee.class.getName()).log(Level.SEVERE, null, ex);
         } catch (AucuneNavetteException ex) {
+            label_error.setText(ex.getMessage());
             Logger.getLogger(JFDepartArrivee.class.getName()).log(Level.SEVERE, null, ex);
         } catch (AucunQuaiException ex) {
+            label_error.setText(ex.getMessage());
             Logger.getLogger(JFDepartArrivee.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btn_arriveeActionPerformed
@@ -199,9 +236,11 @@ public class JFDepartArrivee extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_arrivee;
-    private javax.swing.JButton btn_cancel;
     private javax.swing.JButton btn_depart;
+    private javax.swing.JButton btn_okay;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel label_error;
+    private javax.swing.JLabel label_info;
     private javax.swing.JLabel lbl_bienvenue;
     // End of variables declaration//GEN-END:variables
 }
