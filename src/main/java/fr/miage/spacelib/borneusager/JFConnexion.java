@@ -22,7 +22,7 @@ import javax.naming.NamingException;
  */
 public class JFConnexion extends javax.swing.JFrame {
 
-    final public Long STATION_ID = 14L;
+    final public Long STATION_ID = 10L;
 
     private static JFConnexion pageConnexion;
 
@@ -70,7 +70,6 @@ public class JFConnexion extends javax.swing.JFrame {
         try {
             RMIBorneServiceManager rmiMgr = new RMIBorneServiceManager();
             this.borne = rmiMgr.getClientLourdRemoteSvc();
-            this.borne.testNul("TTITI");
         } catch (NamingException ex) {
             Logger.getLogger(JFConnexion.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -94,9 +93,8 @@ public class JFConnexion extends javax.swing.JFrame {
         txb_nom = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txb_prenom = new javax.swing.JTextField();
-        txb_identifiantNouveauClient = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
         btn_inscription = new javax.swing.JButton();
+        label_error = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("VISIOSPACE: CONNEXION");
@@ -127,10 +125,6 @@ public class JFConnexion extends javax.swing.JFrame {
 
         jLabel3.setText("Prenom");
 
-        txb_identifiantNouveauClient.setEditable(false);
-
-        jLabel5.setText("Identifiant client");
-
         btn_inscription.setText("INSCRIPTION");
         btn_inscription.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -142,22 +136,10 @@ public class JFConnexion extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lbl_bienvenue)
-                .addGap(109, 109, 109))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(txb_identifiantNouveauClient, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(21, 21, 21))
+                .addGap(24, 24, 24)
+                .addComponent(jLabel1)
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,6 +163,14 @@ public class JFConnexion extends javax.swing.JFrame {
                             .addComponent(txb_identifiantClient, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(btn_inscription, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbl_bienvenue)
+                .addGap(109, 109, 109))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(label_error, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -205,11 +195,9 @@ public class JFConnexion extends javax.swing.JFrame {
                     .addComponent(txb_prenom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btn_inscription)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txb_identifiantNouveauClient, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(18, 18, 18)
+                .addComponent(label_error, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
@@ -236,6 +224,7 @@ public class JFConnexion extends javax.swing.JFrame {
 
                 this.dispose();
             } catch (AucunVoyageException ex) {
+                
                 /* Ouvrir nouvelle fenêtre */
                 JFrame frame = new JFEmpruntNavette();
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -252,8 +241,7 @@ public class JFConnexion extends javax.swing.JFrame {
     }//GEN-LAST:event_txb_identifiantClientActionPerformed
 
     private void btn_inscriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_inscriptionActionPerformed
-        usager = borne.inscrire(txb_nom.getText(), txb_nom.getText());
-        txb_identifiantNouveauClient.setText(Long.toString(usager.getId()));
+        usager = borne.inscrire(txb_nom.getText(), txb_prenom.getText());
         txb_identifiantClient.setText(Long.toString(usager.getId()));
     }//GEN-LAST:event_btn_inscriptionActionPerformed
 
@@ -261,29 +249,6 @@ public class JFConnexion extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(JFConnexion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(JFConnexion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(JFConnexion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(JFConnexion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -300,10 +265,9 @@ public class JFConnexion extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel label_error;
     private javax.swing.JLabel lbl_bienvenue;
     private javax.swing.JTextField txb_identifiantClient;
-    private javax.swing.JTextField txb_identifiantNouveauClient;
     private javax.swing.JTextField txb_nom;
     private javax.swing.JTextField txb_prenom;
     // End of variables declaration//GEN-END:variables

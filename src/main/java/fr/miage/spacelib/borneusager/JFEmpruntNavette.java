@@ -9,15 +9,18 @@ import fr.miage.spacelib.utilities.RMIBorneServiceManager;
 import fr.miage.spacelib.vspaceshared.interfremote.ExpoGestionBorneRemote;
 import fr.miage.spacelib.vspaceshared.utilities.AucunQuaiException;
 import fr.miage.spacelib.vspaceshared.utilities.AucunUsagerException;
+import fr.miage.spacelib.vspaceshared.utilities.AucunVoyageException;
 import fr.miage.spacelib.vspaceshared.utilities.AucuneNavetteException;
 import fr.miage.spacelib.vspaceshared.utilities.AucuneStationException;
 import fr.miage.spacelib.vspaceshared.utilities.DateInvalideException;
 import fr.miage.spacelib.vspaceshared.utilities.NombrePassagersInvalideException;
 import fr.miage.spacelib.vspaceshared.utilities.NombrePlacesInvalideException;
+import fr.miage.spacelib.vspaceshared.utilities.ReservationExport;
 import fr.miage.spacelib.vspaceshared.utilities.StationExport;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +46,12 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
 
     private void init() {
         List<StationExport> stations;
+        
+        Date dateCour = new Date();
+        txb_dateDepart.setText(new SimpleDateFormat("dd/MM/yyyy").format(dateCour));
+        
+        label_error.setText("");
+        
         try {
             RMIBorneServiceManager rmiMgr = new RMIBorneServiceManager();
             this.borne = rmiMgr.getClientLourdRemoteSvc();
@@ -78,6 +87,7 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
         txb_dateDepart = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txb_dateArrivee = new javax.swing.JTextField();
+        label_error = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(350, 350));
@@ -113,6 +123,12 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
 
         jLabel4.setText("Date départ");
 
+        txb_dateDepart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txb_dateDepartActionPerformed(evt);
+            }
+        });
+
         jLabel5.setText("Date arrivée");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -126,12 +142,13 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txb_dateArrivee, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(label_error, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txb_dateArrivee, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -147,7 +164,7 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
                                 .addComponent(cmb_nbPassagers, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                             .addComponent(cmb_stationDest, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 98, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -164,16 +181,19 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmb_stationDest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(txb_dateDepart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(cmb_stationDest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(txb_dateDepart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel5))
                     .addComponent(txb_dateArrivee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
+                .addGap(30, 30, 30)
+                .addComponent(label_error, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_ok)
                     .addComponent(btn_cancel))
@@ -185,25 +205,30 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
 
     private void btn_okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_okActionPerformed
         String stationDest = cmb_stationDest.getSelectedItem().toString();
+        ReservationExport res;
         try {
-            System.out.println(Integer.parseInt((String) cmb_nbPassagers.getSelectedItem().toString()));
-            borne.reserverVoyage(JFConnexion.getPageConnexion().getUsager().getId(),
+            label_error.setText("");
+            
+            res = borne.reserverVoyage(JFConnexion.getPageConnexion().getUsager().getId(),
                     Integer.parseInt((String) cmb_nbPassagers.getSelectedItem().toString()),
-                    new SimpleDateFormat("ss/MM/yyyy").parse(txb_dateDepart.getText()),
-                    new SimpleDateFormat("ss/MM/yyyy").parse(txb_dateArrivee.getText()),
+                    new SimpleDateFormat("dd/MM/yyyy").parse(txb_dateDepart.getText()),
+                    new SimpleDateFormat("dd/MM/yyyy").parse(txb_dateArrivee.getText()),
                     JFConnexion.getPageConnexion().STATION_ID,
                     Long.parseLong( stationDest.split(" | ")[2] ));
 
             /* Ouvrir nouvelle fenêtre */
+            JFConnexion.getPageConnexion().setReservation(res);
             JFrame frame = new JFDepartArrivee();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(300, 400);
             frame.setVisible(true);
             
             this.dispose();
+
         } catch (ParseException | AucunUsagerException | NombrePassagersInvalideException | DateInvalideException | AucuneStationException | AucunQuaiException | AucuneNavetteException | NombrePlacesInvalideException ex) {
             Logger.getLogger(JFEmpruntNavette.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            label_error.setText(ex.getMessage());
+        } 
     }//GEN-LAST:event_btn_okActionPerformed
 
     private void btn_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelActionPerformed
@@ -215,6 +240,10 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
         
         this.dispose();
     }//GEN-LAST:event_btn_cancelActionPerformed
+
+    private void txb_dateDepartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txb_dateDepartActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txb_dateDepartActionPerformed
 
     /**
      * @param args the command line arguments
@@ -261,6 +290,7 @@ public class JFEmpruntNavette extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel label_error;
     private javax.swing.JLabel lbl_bienvenue;
     private javax.swing.JTextField txb_dateArrivee;
     private javax.swing.JTextField txb_dateDepart;
